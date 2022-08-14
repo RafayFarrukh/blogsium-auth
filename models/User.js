@@ -2,9 +2,11 @@ import mongoose from "mongoose";
 // import validator from "validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+const { ObjectId } = mongoose.Schema.Types;
+
 const UserSchema = new mongoose.Schema(
   {
-    username: {
+    name: {
       type: String,
       required: true,
     },
@@ -21,6 +23,8 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    followers: [{ type: ObjectId, ref: "User" }],
+    following: [{ type: ObjectId, ref: "User" }],
     // blogs: [
     //   {
     //     type: mongoose.Schema.Types.ObjectId,

@@ -20,7 +20,7 @@ router.route("/:id").get(getById);
 router.route("/delete/:id").delete(deleteArticle);
 
 router.route("/update/:id").put(updateArticle);
-router.route("/like/:id").put(likeArticle);
-router.route("/unlike/:id").put(unlikeArticle);
-router.route("/comment/:id").put(commentArticle);
+router.route("/like").put(likeArticle);
+router.route("/unlike").put(unlikeArticle);
+router.route("/comment").put(commentArticle);
 export default router;

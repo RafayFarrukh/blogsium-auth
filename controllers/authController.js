@@ -6,7 +6,7 @@ const registerUser = async (req, res) => {
   const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
   const newUser = new User({
-    username: req.body.username,
+    name: req.body.name,
     email: req.body.email,
     password: hashedPassword,
   });
@@ -39,8 +39,8 @@ const loginUser = async (req, res) => {
             { _id: savedUser._id },
             process.env.JWT_SECRET
           );
-          const { _id, name, email } = savedUser;
-          res.json({ token, user: { _id, email } });
+          const { _id, name, email, followers, following } = savedUser;
+          res.json({ token, user: { _id, email, name, followers, following } });
         } else {
           return res.status(422).json({ error: "Invalid Email or password" });
         }

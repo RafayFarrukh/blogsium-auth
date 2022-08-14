@@ -1,35 +1,32 @@
 import Article from "../models/Article.js";
 
-import ValidateArticle from "../validation/validation_article.js";
-
 const createArticle = async (req, res) => {
-  // const newPost = new Article(req.body);
-
-  const { title, body, pic, username } = req.body;
-
-  const newPost = new Article({
+  const { title, body, pic } = req.body;
+  if (!title || !body || !pic) {
+    return res.status(422).json({ error: "Plase add all the fields" });
+  }
+  // req.user.password = undefined;
+  const post = new Article({
     title,
     body,
     image: pic,
-    username,
+    postedBy: req.user,
   });
-  newPost.save((err, createdPost) => {
-    if (err) {
-      return res.status(400).json({
-        error: err,
-      });
-    }
-    return res.status(200).json({
-      post: createdPost,
+  post
+    .save()
+    .then((result) => {
+      res.json({ post: result });
+    })
+    .catch((err) => {
+      console.log(err);
     });
-  });
 };
 
 const getAllArticle = async (req, res) => {
-  const username = req.query.user;
+  const name = req.query.user;
 
-  if (username) {
-    Article.find({ username })
+  if (name) {
+    Article.find({ name })
       .then((post, err) => {
         if (err) {
           return res.status(400).json({
@@ -161,9 +158,13 @@ const updateArticle = (req, res) => {
 };
 const likeArticle = async (req, res) => {
   Article.findByIdAndUpdate(
-    req.params.id,
-    { $push: { likes: req.params.id } },
-    { new: true }
+    req.body.postId,
+    {
+      $push: { likes: req.params._id },
+    },
+    {
+      new: true,
+    }
   ).exec((err, result) => {
     if (err) {
       return res.status(422).json({ error: err });
@@ -174,9 +175,13 @@ const likeArticle = async (req, res) => {
 };
 const unlikeArticle = async (req, res) => {
   Article.findByIdAndUpdate(
-    req.params.id,
-    { $pull: { likes: req.params.id } },
-    { new: true }
+    req.body.postId,
+    {
+      $pull: { likes: req.params._id },
+    },
+    {
+      new: true,
+    }
   ).exec((err, result) => {
     if (err) {
       return res.status(422).json({ error: err });
