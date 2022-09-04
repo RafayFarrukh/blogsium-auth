@@ -22,38 +22,51 @@ const createArticle = async (req, res) => {
     });
 };
 
-const getAllArticle = async (req, res) => {
-  const name = req.query.user;
+// const getAllArticle = async (req, res) => {
+//   const name = req.query.user;
 
-  if (name) {
-    Article.find({ name })
-      .then((post, err) => {
-        if (err) {
-          return res.status(400).json({
-            errorInFind: err,
-          });
-        }
-        return res.status(200).json(post);
-      })
-      .catch((err) => {
-        return res.status(400).json({
-          error: "Post not found",
-        });
-      });
-  } else {
-    Article.find()
-      .then((post, err) => {
-        if (err) {
-          return res.status(400).json({
-            errorInAllPost: err,
-          });
-        }
-        return res.status(200).json(post);
-      })
-      .catch((err) => {
-        return res.status(400).json(err);
-      });
-  }
+//   if (name) {
+//     Article.find({ name })
+//       .then((post, err) => {
+//         if (err) {
+//           return res.status(400).json({
+//             errorInFind: err,
+//           });
+//         }
+//         return res.status(200).json(post);
+//       })
+//       .catch((err) => {
+//         return res.status(400).json({
+//           error: "Post not found",
+//         });
+//       });
+//   } else {
+//     Article.find()
+//       .then((post, err) => {
+//         if (err) {
+//           return res.status(400).json({
+//             errorInAllPost: err,
+//           });
+//         }
+//         return res.status(200).json(post);
+//       })
+//       .catch((err) => {
+//         return res.status(400).json(err);
+//       });
+//   }
+// };
+
+const getAllArticle = async (req, res) => {
+  Article.find()
+    .populate("postedBy", "_id name")
+    .populate("comments.postedBy", "_id name")
+    // .sort('-createdAt')
+    .then((posts) => {
+      res.json({ posts });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 const getById = async (req, res) => {
